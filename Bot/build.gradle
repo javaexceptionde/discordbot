@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'de.javaexceptionghg'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'net.dv8tion:JDA:4.2.0_204'
+    compile("org.mongodb:mongo-java-driver:3.4.1")
+    compile("org.mongodb:mongodb-driver-async:3.4.1")
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+}
