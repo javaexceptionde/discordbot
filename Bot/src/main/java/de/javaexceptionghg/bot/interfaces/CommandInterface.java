@@ -7,6 +7,13 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public interface CommandInterface {
 
+    /**
+     *
+     * @param event Is the instance of the {@link MessageReceivedEvent}
+     * @param args The arguments of the Command
+     * @param guild The guild where the Command was executed
+     * @param sender The sender of the Command
+     */
     void onCommand(MessageReceivedEvent event, String[] args, Guild guild, Member sender);
 
 }

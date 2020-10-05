@@ -1,9 +1,20 @@
 plugins {
     id 'java'
+    id'application'
+    id'com.github.johnrengelman.shadow' version '6.0.0'
 }
+
+/*jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}*/
 
 group 'de.javaexceptionghg'
 version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+mainClassName = 'de.javaexceptionghg.bot.Startup'
 
 repositories {
     mavenCentral()

@@ -13,6 +13,7 @@ public class HelpCommand extends Command {
 
     @Override
     public void onCommand(MessageReceivedEvent event, String[] args, Guild guild, Member sender) {
-        event.getMessage().getChannel().sendMessage("Help").submit();
+        event.getMessage().getChannel().sendMessage("Help ").submit();
+
     }
 }
