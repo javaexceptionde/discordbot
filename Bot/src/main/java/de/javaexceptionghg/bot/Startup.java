@@ -7,8 +7,9 @@ import de.javaexceptionghg.bot.database.MainDatabase;
 import de.javaexceptionghg.bot.listener.CommandExecuteListener;
 import de.javaexceptionghg.bot.listener.GuildJoinListener;
 import de.javaexceptionghg.bot.listener.GuildMemberJoinListener;
-import jdk.nashorn.internal.objects.annotations.Constructor;
+import de.javaexceptionghg.bot.messages.MessageProvider;
 import lombok.Getter;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -24,6 +25,8 @@ public class Startup {
     private MainDatabase mainDatabase;
     private DiscordDatabaseUtils databaseUtils;
     private Logger logger;
+    private MessageProvider messageProvider;
+    private JDA jda;
     @Getter
     private static Startup instance;
 
@@ -38,13 +41,14 @@ public class Startup {
         jdaBuilder.addEventListeners(new GuildJoinListener());
         jdaBuilder.addEventListeners(new GuildMemberJoinListener());
         try {
-            jdaBuilder.build();
+            getInstance().setJda(jdaBuilder.build());
             getInstance().getLogger().info("Startup successful");
         } catch (LoginException e) {
             getInstance().getLogger().error("The Bot failed on Startup" + e.getMessage());
         }
         Register.registerCommand(new HelpCommand());
         Register.registerCommand(new KickCommand());
+        getInstance().afterStart();
     }
 
     public void init(){
@@ -54,7 +58,19 @@ public class Startup {
         //mainDatabase.getDatabase().createCollection("Guilds");
         //mainDatabase.getDatabase().createCollection("Members");
         databaseUtils = new DiscordDatabaseUtils();
+        messageProvider = new MessageProvider();
     }
 
+    public void afterStart(){
+        jda.getGuilds().forEach(guild -> {
+            messageProvider.checkNewMessages(guild);
+            guild.getMember(jda.getSelfUser()).modifyNickname(databaseUtils.getNickname(guild)).submit();
+        });
+        jda.getShardManager().setStatus(OnlineStatus.ONLINE);
+        jda.getShardManager().setActivity(Activity.listening("!help"));
+    }
 
+    public void setJda(JDA jda) {
+        this.jda = jda;
+    }
 }

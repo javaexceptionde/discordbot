@@ -44,6 +44,8 @@ public abstract class DiscordDatabaseAbstracts {
 
     public abstract void kick(Member member, Member initiator, String reason);
 
+    public abstract String getNickname(Guild guild);
+
     public abstract boolean guildExists(Guild guild);
 
     /**
@@ -54,4 +56,5 @@ public abstract class DiscordDatabaseAbstracts {
      */
     public abstract boolean memberExists(Guild guild, Member member);
 
+    public abstract void setBotNickname(String nickname, Guild guild);
 }

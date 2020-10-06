@@ -18,6 +18,7 @@ public class GuildJoinListener extends ListenerAdapter {
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
         if (!databaseUtils.guildExists(event.getGuild())){
             databaseUtils.create(event.getGuild());
+            Startup.getInstance().getMessageProvider().initDefaultMessages(event.getGuild());
         }
     }
 }

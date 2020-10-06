@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 
+import javax.print.Doc;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,6 +26,7 @@ public class DiscordDatabaseUtils extends DiscordDatabaseAbstracts {
         document.append("ID", 1);
         document.append("GuildId", guild.getId());
         document.append("Owner", Objects.requireNonNull(guild.getOwner()).getId());
+        document.append("Nickname", "Test Bot");
         database.insert("Guilds",document);
     }
 
@@ -123,6 +125,11 @@ public class DiscordDatabaseUtils extends DiscordDatabaseAbstracts {
     }
 
     @Override
+    public String getNickname(Guild guild) {
+        return database.getDocument("Guilds", "GuildId", guild.getId()).getString("Nickname");
+    }
+
+    @Override
     public boolean guildExists(Guild guild) {
         return database.contains("GuildId", guild.getId(), "Guilds");
     }
@@ -133,6 +140,13 @@ public class DiscordDatabaseUtils extends DiscordDatabaseAbstracts {
         map.put("MemberId", member.getId());
         map.put("GuildId", guild.getId());
         return database.contains(map, "Members");
+    }
+
+    @Override
+    public void setBotNickname(String nickname, Guild guild) {
+        Document document = database.getDocument("Guilds", "GuildId", guild.getId());
+        document.replace("Nickname", nickname);
+        database.update(database.getDocument("Guilds", "GuildId", guild.getId()), document, "Guilds");
     }
 
 }

@@ -12,9 +12,4 @@ public abstract class Command implements CommandInterface{
     public Command(String command){
         this.command = command;
     }
-
-
-    public String getCommand() {
-        return command;
-    }
 }
