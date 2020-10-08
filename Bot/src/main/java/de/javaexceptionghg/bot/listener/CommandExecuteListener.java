@@ -3,6 +3,7 @@ package de.javaexceptionghg.bot.listener;
 import de.javaexceptionghg.bot.Startup;
 import de.javaexceptionghg.bot.abstracts.Command;
 import de.javaexceptionghg.bot.list.CommandList;
+import de.javaexceptionghg.bot.messages.CommandMessageProvider;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,6 @@ public class CommandExecuteListener extends ListenerAdapter {
         }else {
             args = messageArgs.toString().split(" ");
         }
-        CommandList.getInstance().get(command).onCommand(event, args, event.getGuild(), event.getMember());
+        CommandList.getInstance().get(command).onCommand(event, args, event.getGuild(), event.getMember(), new CommandMessageProvider(event.getGuild(), event));
     }
 }

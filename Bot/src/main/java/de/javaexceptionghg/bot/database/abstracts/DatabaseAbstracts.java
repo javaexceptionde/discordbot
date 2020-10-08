@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+import javax.print.Doc;
 import java.util.List;
 import java.util.Map;
 
@@ -289,4 +290,7 @@ public abstract class DatabaseAbstracts {
      * @param collection the name of the {@link MongoCollection} to query in
      */
 
+    public abstract void updateMany(Document query, Document update, String collection);
+
+    public abstract void replace(Document query, Document replacement, String collection);
 }

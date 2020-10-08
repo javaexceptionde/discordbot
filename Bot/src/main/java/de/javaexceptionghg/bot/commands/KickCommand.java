@@ -2,6 +2,7 @@ package de.javaexceptionghg.bot.commands;
 
 import de.javaexceptionghg.bot.Startup;
 import de.javaexceptionghg.bot.abstracts.Command;
+import de.javaexceptionghg.bot.messages.CommandMessageProvider;
 import de.javaexceptionghg.bot.messages.enums.MessageEnum;
 import de.javaexceptionghg.bot.messages.MessageProvider;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -20,37 +21,37 @@ public class KickCommand extends Command {
     }
 
     @Override
-    public void onCommand(MessageReceivedEvent event, String[] args, Guild guild, Member sender) {
+    public void onCommand(MessageReceivedEvent event, String[] args, Guild guild, Member sender, CommandMessageProvider messageProvider) {
         Message message = event.getMessage();
         if (args.length == 0){
-            message.getChannel().sendMessage(new MessageBuilder(messageProvider.getMessage(MessageEnum.KICK_USAGE, guild).get()).build()).submit();
+            message.getChannel().sendMessage(new MessageBuilder(messageProvider.get(MessageEnum.KICK_USAGE).get()).build()).submit();
         }
         if (args.length == 1) {
             if (message.getMentionedMembers().isEmpty()) {
-                message.getChannel().sendMessage(new MessageBuilder(messageProvider.getMessage(MessageEnum.KICK_USAGE, guild).get()).build()).submit();
+                message.getChannel().sendMessage(new MessageBuilder(messageProvider.get(MessageEnum.KICK_USAGE).get()).build()).submit();
                 return;
             }
             if (message.getMentionedMembers().size() > 1) {
-                message.getChannel().sendMessage(messageProvider.getMessage(MessageEnum.KICK_NOT_MORE, guild).get()).submit();
+                message.getChannel().sendMessage(messageProvider.get(MessageEnum.KICK_NOT_MORE).get()).submit();
                 return;
             }
             message.getMentionedMembers().forEach(member -> {
                 try {
                     member.kick().submit();
                 }catch (HierarchyException exception){
-                    message.getChannel().sendMessage(messageProvider.getMessage(MessageEnum.CANNOT_MODIFY_MEMBER, guild).get()).submit();
+                    message.getChannel().sendMessage(messageProvider.get(MessageEnum.CANNOT_MODIFY_MEMBER).get()).submit();
                     return;
                 }
-                message.getChannel().sendMessage(member.getAsMention() + " wurde gekickt").submit();
+                message.getChannel().sendMessage(messageProvider.get(MessageEnum.KICK_MEMBER).get()).submit();
             });
         }
         if (args.length >= 2){
             if (message.getMentionedMembers().isEmpty()) {
-                message.getChannel().sendMessage(new MessageBuilder(messageProvider.getMessage(MessageEnum.KICK_USAGE, guild).get()).build()).submit();
+                message.getChannel().sendMessage(new MessageBuilder(messageProvider.get(MessageEnum.KICK_USAGE).get()).build()).submit();
                 return;
             }
             if (message.getMentionedMembers().size() > 1) {
-                message.getChannel().sendMessage("Du darfst nicht mehr als einen User markieren").submit();
+                message.getChannel().sendMessage(messageProvider.get(MessageEnum.KICK_NOT_MORE).get()).submit();
                 return;
             }
             StringBuilder stringBuilder = new StringBuilder();
@@ -59,9 +60,9 @@ public class KickCommand extends Command {
             }
             message.getMentionedMembers().forEach(member -> {
                 member.getUser().openPrivateChannel().queue(privateChannel -> {
-                    privateChannel.sendMessage("Du wurdest gekickt\nGrund: " + stringBuilder.toString()).submit();
+                    privateChannel.sendMessage(messageProvider.get(MessageEnum.KICK_MEMBER_REASON).get()).submit();
                 });
-                message.getChannel().sendMessage(member.getAsMention() + " wurde gekickt").submit();
+                message.getChannel().sendMessage(messageProvider.get(MessageEnum.KICK_MEMBER).get()).submit();
                 member.kick().submit();
             });
         }

@@ -4,6 +4,7 @@ import com.mongodb.*;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
 import de.javaexceptionghg.bot.IniFile;
 import de.javaexceptionghg.bot.database.abstracts.DatabaseAbstracts;
 import lombok.Getter;
@@ -194,6 +195,16 @@ public class MainDatabase extends DatabaseAbstracts {
     @Override
     public void update(Document query, Document update, String collection) {
         getCollection(collection).updateOne(query, update);
+    }
+
+    @Override
+    public void updateMany(Document query, Document update, String collection) {
+        getCollection(collection).updateMany(query, update);
+    }
+
+    @Override
+    public void replace(Document query, Document replacement, String collection) {
+        getCollection(collection).replaceOne(query, replacement);
     }
 
     public void update(String key, Object value, String operator, String field, Object into, String collection) {
