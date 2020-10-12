@@ -1,14 +1,14 @@
 package de.javaexceptionghg.bot.messages;
 
 import de.javaexceptionghg.bot.Startup;
-import de.javaexceptionghg.bot.database.abstracts.DatabaseAbstracts;
+import de.javaexceptionghg.bot.database.DatabaseProvider;
 import de.javaexceptionghg.bot.messages.enums.MessageEnum;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public abstract class MessageProviderAbstract {
 
-    DatabaseAbstracts databaseUtils;
+    DatabaseProvider databaseUtils;
 
     public MessageProviderAbstract(){
         databaseUtils = Startup.getInstance().getMainDatabase();

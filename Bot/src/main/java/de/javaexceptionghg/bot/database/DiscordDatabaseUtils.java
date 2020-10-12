@@ -2,6 +2,7 @@ package de.javaexceptionghg.bot.database;
 
 import de.javaexceptionghg.bot.Startup;
 import de.javaexceptionghg.bot.database.abstracts.DiscordDatabaseAbstracts;
+import de.javaexceptionghg.bot.database.abstracts.IDatabaseProvider;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -11,10 +12,13 @@ import javax.print.Doc;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DiscordDatabaseUtils extends DiscordDatabaseAbstracts {
 
-    private MainDatabase database;
+    private IDatabaseProvider database;
 
     public DiscordDatabaseUtils(){
         database = Startup.getInstance().getMainDatabase();
@@ -27,7 +31,7 @@ public class DiscordDatabaseUtils extends DiscordDatabaseAbstracts {
         document.append("GuildId", guild.getId());
         document.append("Owner", Objects.requireNonNull(guild.getOwner()).getId());
         document.append("Nickname", "Test Bot");
-        database.insert("Guilds",document);
+        database.insert(document, "Guilds");
     }
 
     @Override
@@ -37,7 +41,7 @@ public class DiscordDatabaseUtils extends DiscordDatabaseAbstracts {
         document.append("MemberId", member.getId());
         document.append("GuildId", guild.getId());
         document.append("joined", true);
-        database.insert("Members", document);
+        database.insert(document, "Members");
     }
 
     @Override
@@ -126,7 +130,11 @@ public class DiscordDatabaseUtils extends DiscordDatabaseAbstracts {
 
     @Override
     public String getNickname(Guild guild) {
-        return database.getDocument("Guilds", "GuildId", guild.getId()).getString("Nickname");
+        AtomicReference<String> atomicReference = new AtomicReference<>();
+        database.getDocument("GuildId", guild.getId(), "Guilds", document -> {
+            atomicReference.set(document.getString("Nickname"));
+        });
+        return atomicReference.get();
     }
 
     @Override
@@ -139,6 +147,9 @@ public class DiscordDatabaseUtils extends DiscordDatabaseAbstracts {
         Map<String, Object> map = new HashMap<>();
         map.put("MemberId", member.getId());
         map.put("GuildId", guild.getId());
+        new DatabaseProvider().getDocument("", "", "", document -> {
+
+        });
         return database.contains(map, "Members");
     }
 

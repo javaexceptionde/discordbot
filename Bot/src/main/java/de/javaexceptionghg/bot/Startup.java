@@ -8,6 +8,7 @@ import de.javaexceptionghg.bot.listener.CommandExecuteListener;
 import de.javaexceptionghg.bot.listener.GuildJoinListener;
 import de.javaexceptionghg.bot.listener.GuildMemberJoinListener;
 import de.javaexceptionghg.bot.messages.MessageProvider;
+import de.javaexceptionghg.bot.schedule.Scheduler;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 
 @Getter
@@ -40,6 +42,26 @@ public class Startup {
     public static void main(String[] args) {
         Startup startup = new Startup();
         instance = startup;
+        Scheduler scheduler = new Scheduler();
+
+        scheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread() + " Schedule");
+            }
+        });
+        scheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread() + " Schedule1");
+            }
+        });
+        scheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread() + " Schedule2");
+            }
+        });
         startup.init();
         JDABuilder jdaBuilder = new JDABuilder("NjY1ODk1NzIxODkwNzQyMjgy.XhsRtw.bcBX6F7oYevcnOE19xZMCVXeutw");
         jdaBuilder.setStatus(OnlineStatus.ONLINE);
